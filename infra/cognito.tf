@@ -4,20 +4,6 @@ resource "aws_cognito_user_pool" "pool" {
   username_attributes = ["email"]
   auto_verified_attributes = ["email"]
 
-#   schema {
-#     name     = "email"
-#     attribute_data_type = "String"
-#     required = true
-#     mutable  = true
-#   }
-
-#   schema {
-#     name     = "name"
-#     attribute_data_type = "String"
-#     required = true
-#     mutable  = true
-#   }
-
   verification_message_template {
     default_email_option = "CONFIRM_WITH_CODE"
     email_subject        = "Welcome to Pantree"
@@ -34,33 +20,18 @@ resource "aws_cognito_user_pool" "pool" {
 }
 
 resource "aws_cognito_user_pool_client" "web" {
-#   depends_on = [ aws_amplify_app.frontend_app ]
-
   name         = "frontend-client"
   user_pool_id = aws_cognito_user_pool.pool.id
   generate_secret = false
 
   explicit_auth_flows = [
-    "ALLOW_USER_SRP_AUTH",
-    "ALLOW_REFRESH_TOKEN_AUTH"
+    "ALLOW_USER_SRP_AUTH"
   ]
 
   refresh_token_rotation {
     feature                    = "ENABLED"
     retry_grace_period_seconds = 10
   }
-
-// Used for Hosted UI, but we aren't using Hosted UI
-#   allowed_oauth_flows                  = ["code"]
-#   allowed_oauth_scopes                 = ["email", "openid", "profile"]
-#   allowed_oauth_flows_user_pool_client = true
-#   callback_urls = [
-#     "pantree://callback"
-#   ]
-#   logout_urls = [
-#     "pantree://signout"
-#   ]
-#   supported_identity_providers         = ["COGNITO"]
 }
 
 output "user_pool_id" {

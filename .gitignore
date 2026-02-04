@@ -39,3 +39,10 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+# terraform
+infra/terraform.tfvars
+infra/.terraform
+infra/terraform.tfstate
+infra/terraform.tfstate*
+infra/.terraform*

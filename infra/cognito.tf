@@ -19,14 +19,13 @@ resource "aws_cognito_user_pool" "pool" {
   }
 }
 
-resource "aws_cognito_user_pool_client" "web" {
+resource "aws_cognito_user_pool_client" "client" {
+    depends_on = [ aws_cognito_user_pool.pool ]
   name         = "frontend-client"
   user_pool_id = aws_cognito_user_pool.pool.id
   generate_secret = false
 
-  explicit_auth_flows = [
-    "ALLOW_USER_SRP_AUTH"
-  ]
+  explicit_auth_flows = [  "ALLOW_USER_PASSWORD_AUTH"  ]
 
   refresh_token_rotation {
     feature                    = "ENABLED"
@@ -39,6 +38,6 @@ output "user_pool_id" {
 }
 
 output "user_pool_client_id" {
-  value = aws_cognito_user_pool_client.web.id
+  value = aws_cognito_user_pool_client.client.id
   description = "Cognito App Client ID"
 }

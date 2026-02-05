@@ -1,30 +1,11 @@
-// app/(tabs)/_layout.tsx
-import { Tabs } from "expo-router";
-import { Platform } from "react-native";
+import { Tabs, Redirect, RelativePathString } from "expo-router";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export default function TabsLayout() {
-  return (
-    <Tabs
-      screenOptions={{
-        headerShown: false, // we'll typically show headers inside each tab's own stack/layout
-        tabBarHideOnKeyboard: Platform.OS === "android",
-      }}
-    >
-      <Tabs.Screen
-        name="recipes"
-        options={{
-          title: "Recipes",
-          // tabBarIcon: ({ color, size }) => <YourIcon name="book" color={color} size={size} />,
-        }}
-      />
+  const { status } = useAuth();
 
-      <Tabs.Screen
-        name="pantry"
-        options={{
-          title: "Pantry",
-          // tabBarIcon: ({ color, size }) => <YourIcon name="basket" color={color} size={size} />,
-        }}
-      />
-    </Tabs>
-  );
+  if (status === "loading") return null;
+  if (status === "unauthed") return <Redirect href={"/(auth)/sign-in" as RelativePathString} />;
+
+  return <Tabs />;
 }

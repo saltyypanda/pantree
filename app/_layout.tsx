@@ -1,4 +1,5 @@
 import '@/global.css';
+import { AuthProvider } from '@/lib/auth/AuthProvider';
 
 import { NAV_THEME } from '@/lib/theme';
 import { ThemeProvider } from '@react-navigation/native';
@@ -19,11 +20,13 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-        <PortalHost />
+        <AuthProvider>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+          <PortalHost />
+        </AuthProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

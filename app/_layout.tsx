@@ -8,11 +8,16 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Amplify } from "aws-amplify";
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+Amplify.configure({
+  Auth: {
+    Cognito: {
+      userPoolId: process.env.EXPO_PUBLIC_COGNITO_USER_POOL_ID!,
+      userPoolClientId: process.env.EXPO_PUBLIC_COGNITO_CLIENT_ID!,
+    },
+  },
+});
 
 export default function RootLayout() {
   const { colorScheme } = useColorScheme();

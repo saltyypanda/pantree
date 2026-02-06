@@ -21,20 +21,10 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-Amplify.configure({
-  Auth: {
-    Cognito: {
-      userPoolId: 'us-east-1_VfyrkgawU',
-      userPoolClientId: '6omhofc94bs43u5c1kfm0b2m13',
-    },
-  },
-});
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [user, setUser] = useState<AuthUser | null>(null);
 
-  // Runs on app start
   useEffect(() => {
     checkSession();
   }, []);
@@ -58,9 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         options: { authFlowType: 'USER_PASSWORD_AUTH' },
       });
     } catch (error) {
+      alert(error)
     }
     checkSession();
-    router.replace("/");
+    router.replace("/(tabs)/recipes");
   }
 
   async function signOut() {

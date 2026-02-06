@@ -17,7 +17,7 @@ export default function Index() {
 
   // 2. Authenticated -> Go to Main App
   if (status === 'authed') {
-    return <Redirect href={"/(tabs)" as RelativePathString} />;
+    return <Redirect href={"/(tabs)/recipes" as RelativePathString} />;
   }
 
   // 3. Not Authenticated -> Go to Login

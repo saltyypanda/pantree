@@ -5,7 +5,7 @@ export default function TabsLayout() {
   const { status } = useAuth();
 
   if (status === "loading") return null;
-  if (status === "unauthed") return <Redirect href={"/(auth)/sign-in" as RelativePathString} />;
+  if (status === "unauthed") return <Redirect href={"/(auth)/signin" as RelativePathString} />;
 
   return <Tabs />;
 }

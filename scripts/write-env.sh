@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 APP_ENV_FILE="../.env"
 
 cat > "$APP_ENV_FILE" <<EOF

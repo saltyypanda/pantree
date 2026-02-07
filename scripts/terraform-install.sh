@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Install yum-utils
 sudo yum install -y yum-utils

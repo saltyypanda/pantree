@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 USER_POOL_ID=$1
 CLIENT_ID=$2

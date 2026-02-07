@@ -17,6 +17,11 @@ resource "aws_iam_role_policy_attachment" "me_lambda_basic_logs" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "me_lambda_vpc_access" {
+  role       = aws_iam_role.me_lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 # Allow reading your RDS-generated secret
 resource "aws_iam_policy" "me_lambda_secrets_policy" {
   name = "${var.name}-me-lambda-secrets"

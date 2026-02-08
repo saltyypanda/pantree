@@ -1,5 +1,5 @@
 resource "aws_apigatewayv2_api" "api" {
-  name          = "pantree-api"
+  name          = "${var.name}-api"
   protocol_type = "HTTP"
 
   cors_configuration {
@@ -10,10 +10,16 @@ resource "aws_apigatewayv2_api" "api" {
   }
 }
 
-resource "aws_apigatewayv2_authorizer" "recipe_app_authorizer" {
+resource "aws_apigatewayv2_stage" "default" {
+  api_id      = aws_apigatewayv2_api.api.id
+  name        = "$default"
+  auto_deploy = true
+}
+
+resource "aws_apigatewayv2_authorizer" "cognito_jwt" {
   depends_on = [aws_cognito_user_pool.pool, aws_cognito_user_pool_client.client]
 
-  name   = "cognito-authorizer"
+  name   = "${var.name}-cognito-authorizer"
   api_id = aws_apigatewayv2_api.api.id
 
   authorizer_type = "JWT"
@@ -24,25 +30,23 @@ resource "aws_apigatewayv2_authorizer" "recipe_app_authorizer" {
   identity_sources = ["$request.header.Authorization"]
 }
 
-# 1. THE DUMMY TARGET (No Lambda required)
-# This points to a public "echo" service.
-resource "aws_apigatewayv2_integration" "test_integration" {
-  api_id             = aws_apigatewayv2_api.api.id
-  integration_type   = "HTTP_PROXY"
-  integration_method = "GET"
-  integration_uri    = "https://httpbin.org/get"
+# Lambda proxy integration
+resource "aws_apigatewayv2_integration" "me_integration" {
+  api_id           = aws_apigatewayv2_api.api.id
+  integration_type = "AWS_PROXY"
+
+  integration_uri    = aws_lambda_function.me.invoke_arn
+  integration_method = "POST" # required for Lambda proxy even for GET routes
+  payload_format_version = "2.0"
 }
 
-# 2. THE PROTECTED ROUTE
-# This attaches the Authorizer to the dummy target.
-resource "aws_apigatewayv2_route" "auth_test_route" {
+# Route: GET /me (protected by JWT authorizer)
+resource "aws_apigatewayv2_route" "me_route" {
   api_id    = aws_apigatewayv2_api.api.id
-  route_key = "GET /auth-test"
+  route_key = "GET /me"
 
-  # The "Target" is where the request goes (httpbin)
-  target    = "integrations/${aws_apigatewayv2_integration.test_integration.id}"
+  target = "integrations/${aws_apigatewayv2_integration.me_integration.id}"
 
-  # The "Guard" is the Cognito Authorizer
   authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.recipe_app_authorizer.id
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito_jwt.id
 }

@@ -1,3 +1,7 @@
+# -----------------------
+# Database resources
+# -----------------------
+
 resource "aws_security_group" "db" {
   name        = "${var.name}-db-sg"
   description = "DB security group for ${var.name}"
@@ -33,6 +37,10 @@ resource "aws_db_subnet_group" "db" {
   }
 }
 
+# -----------------------
+# Lambda resources
+# -----------------------
+
 resource "aws_security_group" "lambda" {
   name        = "${var.name}-lambda-sg"
   description = "Security group for lambdas"
@@ -53,4 +61,14 @@ resource "aws_security_group_rule" "db_ingress_from_lambda" {
   to_port                  = 5432
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.lambda.id
+}
+
+# Allows API gateway to invoke the me lambda
+resource "aws_lambda_permission" "allow_apigw_invoke_me" {
+  statement_id  = "AllowInvokeFromAPIGatewayMe"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.me.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  source_arn = "${aws_apigatewayv2_api.api.execution_arn}/*/*"
 }

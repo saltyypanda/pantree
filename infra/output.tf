@@ -37,3 +37,11 @@ output "db_secret_arn" {
 output "me_lambda_arn" {
   value = aws_lambda_function.me.arn
 }
+
+# -----------------------
+# API outputs
+# -----------------------
+
+output "api_endpoint" {
+  value = aws_apigatewayv2_api.api.api_endpoint
+}

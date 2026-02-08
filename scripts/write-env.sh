@@ -12,4 +12,7 @@ DB_NAME=$(terraform output -raw db_name)
 DB_HOST=$(terraform output -raw db_endpoint)
 DB_PORT=$(terraform output -raw db_port)
 DB_SECRET_ARN=$(terraform output -raw db_secret_arn)
+
+# API endpoint
+EXPO_PUBLIC_API_ENDPOINT=$(terraform output -raw api_endpoint)
 EOF

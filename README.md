@@ -15,7 +15,7 @@ This project focuses on:
 * scalable patterns (not shortcuts)
 * mobile app development with React Native
 
-## 🏗 Architecture Overview
+## Architecture Overview
 **Frontend**
 - React Native (Expo)
 - Expo Router
@@ -32,7 +32,7 @@ This project focuses on:
 - Terraform (all AWS resources)
 - Bash + Node scripts for deployment
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 pantree/
@@ -51,10 +51,9 @@ pantree/
 │  ├─ write-env.sh
 │  └─ zip-lambdas.mjs
 └─ README.md
+```
 
-````
-
-## 🔐 Authentication Flow
+## Authentication Flow
 1. User signs in via Cognito (Amplify)
 2. App receives JWT tokens
 3. App calls `GET /me`
@@ -64,7 +63,7 @@ pantree/
 
 This `/me` endpoint acts as a **bootstrap** for backend identity.
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Node.js (18+ recommended)
@@ -73,7 +72,7 @@ This `/me` endpoint acts as a **bootstrap** for backend identity.
 - AWS CLI installed
 - Bash (macOS, Linux, or Git Bash on Windows)
 
-## 🔧 AWS Configuration
+## AWS Configuration
 
 Before anything else, configure AWS credentials:
 
@@ -90,7 +89,7 @@ You’ll need:
 
 > You must have permission to create IAM, Lambda, API Gateway, RDS, Cognito, and VPC resources.
 
-## 🏗 Installing Terraform
+## Installing Terraform
 
 If you don’t have Terraform installed:
 
@@ -121,7 +120,7 @@ This will:
 * write environment variables to `.env`
 * create an initial test user
 
-## 📱 Frontend Setup
+## Frontend Setup
 
 From the project root:
 
@@ -138,7 +137,7 @@ EXPO_PUBLIC_USER_POOL_ID=<cognito-pool-id>
 EXPO_PUBLIC_USER_POOL_CLIENT_ID=<client-id>
 ```
 
-## 🧹 Teardown (Destroy AWS Resources)
+## Teardown (Destroy AWS Resources)
 
 **This deletes all AWS resources** created by Terraform.
 

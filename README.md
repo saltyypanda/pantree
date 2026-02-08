@@ -1,73 +1,161 @@
-# Minimal Template
+# Pantree
+A full-stack recipe and pantry management app built with **React Native**, **AWS**, and **PostgreSQL**.
 
-This is a [React Native](https://reactnative.dev/) project built with [Expo](https://expo.dev/) and [React Native Reusables](https://reactnativereusables.com).
+Pantree lets users securely sign in, store recipes, and manage their pantry using a serverless backend.  
+This project is also a learning exploration of cloud architecture.
 
-It was initialized using the following command:
+## Learning Goals
+
+This project focuses on:
+
+* real-world cloud architecture
+* clean separation of auth vs app data
+* idempotent backend design
+* infrastructure-as-code
+* scalable patterns (not shortcuts)
+* mobile app development with React Native
+
+## 🏗 Architecture Overview
+**Frontend**
+- React Native (Expo)
+- Expo Router
+- AWS Amplify Auth (Cognito)
+
+**Backend**
+- AWS API Gateway (HTTP API, v2)
+- AWS Lambda (Node.js / TypeScript)
+- AWS Cognito (JWT auth)
+- Amazon RDS (PostgreSQL)
+- AWS Secrets Manager
+
+**Infrastructure**
+- Terraform (all AWS resources)
+- Bash + Node scripts for deployment
+
+## 📁 Project Structure
+
+```
+pantree/
+├─ app/                 # React Native app (Expo Router)
+├─ components/          # Shared UI components
+├─ assets/              # Images, fonts, etc.
+├─ services/            # Lambda functions (one folder per service)
+│  └─ me/
+│     ├─ handler.ts
+│     └─ dist/
+├─ schema/              # SQL schema + DB helpers
+├─ infra/               # Terraform infrastructure
+├─ scripts/             # Deployment / helper scripts
+│  ├─ deploy-backend.sh
+│  ├─ terraform-install.sh
+│  ├─ write-env.sh
+│  └─ zip-lambdas.mjs
+└─ README.md
+
+````
+
+## 🔐 Authentication Flow
+1. User signs in via Cognito (Amplify)
+2. App receives JWT tokens
+3. App calls `GET /me`
+4. API Gateway validates JWT
+5. Lambda upserts user into database
+6. Backend returns user info
+
+This `/me` endpoint acts as a **bootstrap** for backend identity.
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (18+ recommended)
+- npm or yarn
+- AWS account
+- AWS CLI installed
+- Bash (macOS, Linux, or Git Bash on Windows)
+
+## 🔧 AWS Configuration
+
+Before anything else, configure AWS credentials:
 
 ```bash
-npx @react-native-reusables/cli@latest init -t pantree
-```
+aws configure
+````
 
-## Getting Started
+You’ll need:
 
-To run the development server:
+* AWS Access Key ID
+* AWS Secret Access Key
+* Default region (e.g. `us-east-1`)
+* Output format (`json`)
 
-```bash
-    npm run dev
-    # or
-    yarn dev
-    # or
-    pnpm dev
-    # or
-    bun dev
-```
+> You must have permission to create IAM, Lambda, API Gateway, RDS, Cognito, and VPC resources.
 
-This will start the Expo Dev Server. Open the app in:
+## 🏗 Installing Terraform
 
-- **iOS**: press `i` to launch in the iOS simulator _(Mac only)_
-- **Android**: press `a` to launch in the Android emulator
-- **Web**: press `w` to run in a browser
-
-You can also scan the QR code using the [Expo Go](https://expo.dev/go) app on your device. This project fully supports running in Expo Go for quick testing on physical devices.
-
-## Adding components
-
-You can add more reusable components using the CLI:
+If you don’t have Terraform installed:
 
 ```bash
-npx react-native-reusables/cli@latest add [...components]
+bash scripts/terraform-install.sh
 ```
 
-> e.g. `npx react-native-reusables/cli@latest add input textarea`
+Verify:
 
-If you don't specify any component names, you'll be prompted to select which components to add interactively. Use the `--all` flag to install all available components at once.
+```bash
+terraform -v
+```
 
-## Project Features
+## Backend Setup (AWS)
 
-- ⚛️ Built with [Expo Router](https://expo.dev/router)
-- 🎨 Styled with [Tailwind CSS](https://tailwindcss.com/) via [Nativewind](https://www.nativewind.dev/)
-- 📦 UI powered by [React Native Reusables](https://github.com/founded-labs/react-native-reusables)
-- 🚀 New Architecture enabled
-- 🔥 Edge to Edge enabled
-- 📱 Runs on iOS, Android, and Web
+From the project root:
 
-## Learn More
+```bash
+npm run deploy:backend
+```
 
-To dive deeper into the technologies used:
+This will:
 
-- [React Native Docs](https://reactnative.dev/docs/getting-started)
-- [Expo Docs](https://docs.expo.dev/)
-- [Nativewind Docs](https://www.nativewind.dev/)
-- [React Native Reusables](https://reactnativereusables.com)
+* build and zip all lambda handlers
+* run `terraform init`
+* apply all infrastructure
+* create Cognito, RDS, API Gateway, Lambdas
+* write environment variables to `.env`
+* create an initial test user
 
-## Deploy with EAS
+## 📱 Frontend Setup
 
-The easiest way to deploy your app is with [Expo Application Services (EAS)](https://expo.dev/eas).
+From the project root:
 
-- [EAS Build](https://docs.expo.dev/build/introduction/)
-- [EAS Updates](https://docs.expo.dev/eas-update/introduction/)
-- [EAS Submit](https://docs.expo.dev/submit/introduction/)
+```bash
+npm install
+npm run dev
+```
 
----
+Make sure `.env` includes:
 
-If you enjoy using React Native Reusables, please consider giving it a ⭐ on [GitHub](https://github.com/founded-labs/react-native-reusables). Your support means a lot!
+```env
+EXPO_PUBLIC_API_URL=<api-base-url>
+EXPO_PUBLIC_USER_POOL_ID=<cognito-pool-id>
+EXPO_PUBLIC_USER_POOL_CLIENT_ID=<client-id>
+```
+
+## 🧹 Teardown (Destroy AWS Resources)
+
+**This deletes all AWS resources** created by Terraform.
+
+From the project root:
+
+```bash
+npm run destroy
+```
+
+## Planned Features
+
+* Recipe CRUD (create, edit, delete)
+* Collections of recipes
+* Pantry tracking
+* Image uploads (S3)
+* Search and filtering
+* Offline-friendly caching
+
+## License
+MIT

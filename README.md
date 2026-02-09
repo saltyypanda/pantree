@@ -126,6 +126,8 @@ EXPO_PUBLIC_USER_POOL_ID=<cognito-pool-id>
 EXPO_PUBLIC_USER_POOL_CLIENT_ID=<client-id>
 ```
 
+Be sure to run the frontend _after_ deploying the backend to ensure the values in `.env` are correct.
+
 ## Teardown (Destroy AWS Resources)
 
 **This deletes all AWS resources** created by Terraform.
@@ -133,7 +135,7 @@ EXPO_PUBLIC_USER_POOL_CLIENT_ID=<client-id>
 From the project root:
 
 ```bash
-npm run destroy
+npm run destroy:backend
 ```
 
 ## Planned Features

@@ -8,7 +8,7 @@ resource "aws_lambda_function" "me" {
   filename         = "${path.module}/../services/me/dist/me.zip"
   source_code_hash = filebase64sha256("${path.module}/../services/me/dist/me.zip")
 
-  timeout     = 10
+  timeout     = 30
   memory_size = 256
 
   # Put Lambda in the VPC so it can reach RDS privately

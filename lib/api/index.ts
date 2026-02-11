@@ -23,7 +23,7 @@ const getAuthHeader = async () => {
 export async function getMe() {
   const header = await getAuthHeader();
 
-  const res = await api.get("/me", { ...header });
+  const res = await api.get("/me", header);
 
   return res.data;
 }
